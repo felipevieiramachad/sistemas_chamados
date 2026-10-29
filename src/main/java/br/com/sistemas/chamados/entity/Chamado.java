@@ -1,0 +1,79 @@
+package br.com.sistemas.chamados.entity;
+
+import java.time.LocalDateTime;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "chamados")
+public class Chamado {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 150)
+    private String titulo;
+
+    @Column(length = 2000)
+    private String descricao;
+
+    @Column(name = "data_abertura", nullable = false)
+    private LocalDateTime dataAbertura;
+
+    @Column(name = "data_fechamento")
+    private LocalDateTime dataFechamento;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private StatusChamado status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Prioridade prioridade;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private Cliente cliente;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "categoria_id", nullable = false)
+    private Categoria categoria;
+
+    // fica nulo até um técnico ser atribuído
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tecnico_id")
+    private Tecnico tecnico;
+
+    protected Chamado() { }
+
+    public Chamado(String titulo, String descricao, Prioridade prioridade,
+                   Cliente cliente, Categoria categoria) {
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.prioridade = prioridade;
+        this.cliente = cliente;
+        this.categoria = categoria;
+        this.status = StatusChamado.ABERTO;
+        this.dataAbertura = LocalDateTime.now();
+    }
+
+    public Long getId() { return id; }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public LocalDateTime getDataAbertura() { return dataAbertura; }
+    public LocalDateTime getDataFechamento() { return dataFechamento; }
+    public void setDataFechamento(LocalDateTime dataFechamento) { this.dataFechamento = dataFechamento; }
+    public StatusChamado getStatus() { return status; }
+    public void setStatus(StatusChamado status) { this.status = status; }
+    public Prioridade getPrioridade() { return prioridade; }
+    public void setPrioridade(Prioridade prioridade) { this.prioridade = prioridade; }
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+    public Categoria getCategoria() { return categoria; }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
+    public Tecnico getTecnico() { return tecnico; }
+    public void setTecnico(Tecnico tecnico) { this.tecnico = tecnico; }
+}
