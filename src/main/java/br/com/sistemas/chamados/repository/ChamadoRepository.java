@@ -1,0 +1,13 @@
+package br.com.sistemas.chamados.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+import br.com.sistemas.chamados.entity.Chamado;
+
+public interface ChamadoRepository
+        extends JpaRepository<Chamado, Long>, JpaSpecificationExecutor<Chamado> {
+    boolean existsByClienteId(Long clienteId);
+    boolean existsByCategoriaId(Long categoriaId);
+    boolean existsByTecnicoId(Long tecnicoId);
+}
