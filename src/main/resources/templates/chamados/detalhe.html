@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: pagina('Chamado', 'chamados', ~{::section})}">
+<body>
+<section th:with="d=${chamado}, fechado=${chamado.status().name() == 'FECHADO'}">
+  <p><a th:href="@{/web/chamados}">Voltar para chamados</a></p>
+
+  <header class="topo">
+    <div>
+      <h1 th:text="|#${d.id()} ${d.titulo()}|">#1 Título</h1>
+      <span class="selo" th:classappend="${'pr-' + d.prioridade().name()}"
+            th:text="${'Prioridade ' + d.prioridade().rotulo}">Prioridade Média</span>
+    </div>
+    <div class="grupo">
+      <a class="botao secundario" th:unless="${fechado}" th:href="@{|/web/chamados/${d.id()}/editar|}">Editar</a>
+      <form method="post" th:action="@{|/web/chamados/${d.id()}/excluir|}"
+            data-confirma="Excluir este chamado e todos os seus comentários?">
+        <button class="botao secundario perigo" type="submit">Excluir</button>
+      </form>
+    </div>
+  </header>
+
+  <!-- trilha de status: clicar em uma etapa altera o status -->
+  <ol class="trilha" aria-label="Andamento do chamado" th:with="atual=${d.status().ordinal()}">
+    <li th:each="s, etapa : ${statusOpcoes}"
+        th:classappend="${etapa.index lt atual} ? 'feito' : (${etapa.index == atual} ? 'atual')">
+      <form method="post" th:action="@{|/web/chamados/${d.id()}/status|}"
+            th:attr="data-confirma=${s.name() == 'FECHADO'} ? 'Fechar o chamado? Depois disso ele não poderá mais ser alterado.' : null">
+        <input type="hidden" name="status" th:value="${s.name()}">
+        <button type="submit" th:text="${s.rotulo}" th:disabled="${fechado or etapa.index == atual}">Aberto</button>
+      </form>
+    </li>
+  </ol>
+
+  <p class="descricao" th:if="${d.descricao() != null}" th:text="${d.descricao()}">Descrição</p>
+
+  <dl class="dados">
+    <dt>Cliente</dt>
+    <dd><a th:href="@{|/web/clientes/${d.clienteId()}|}" th:text="${d.clienteNome()}">Cliente</a></dd>
+    <dt>Categoria</dt>
+    <dd th:text="${d.categoriaNome()}">Categoria</dd>
+    <dt>Técnico</dt>
+    <dd th:text="${d.tecnicoNome() != null} ? ${d.tecnicoNome()} : 'Ninguém atribuído'">Técnico</dd>
+    <dt>Aberto em</dt>
+    <dd th:text="${#temporals.format(d.dataAbertura(), 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</dd>
+    <dt>Fechado em</dt>
+    <dd th:text="${d.dataFechamento() != null} ? ${#temporals.format(d.dataFechamento(), 'dd/MM/yyyy HH:mm')} : '—'">—</dd>
+  </dl>
+
+  <form class="linha" method="post" th:action="@{|/web/chamados/${d.id()}/atribuir|}">
+    <select name="tecnicoId" aria-label="Técnico responsável" th:disabled="${fechado}">
+      <option value="">Selecione o técnico</option>
+      <option th:each="t : ${tecnicos}" th:value="${t.id()}"
+              th:text="|${t.nome()} (${t.perfil().rotulo})|"
+              th:selected="${d.tecnicoId() != null and d.tecnicoId() == t.id()}">Técnico</option>
+    </select>
+    <button class="botao" type="submit" th:disabled="${fechado}">Atribuir técnico</button>
+  </form>
+
+  <h2>Comentários</h2>
+  <p class="vazio" th:if="${#lists.isEmpty(d.comentarios())}">Ainda não há comentários neste chamado.</p>
+  <ul class="comentarios" th:unless="${#lists.isEmpty(d.comentarios())}">
+    <li th:each="m : ${d.comentarios()}">
+      <p class="autor">
+        <strong th:text="${m.autor()}">Autor</strong>
+        <span class="suave" th:text="${#temporals.format(m.data(), 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</span>
+      </p>
+      <p class="texto" th:text="${m.texto()}">Texto do comentário</p>
+    </li>
+  </ul>
+
+  <form class="cartao" method="post" novalidate
+        th:action="@{|/web/chamados/${d.id()}/comentarios|}" th:object="${comentarioForm}">
+    <label class="campo">
+      <span>Seu nome</span>
+      <input type="text" th:field="*{autor}">
+      <small th:if="${#fields.hasErrors('autor')}" th:errors="*{autor}">Erro</small>
+    </label>
+    <label class="campo">
+      <span>Comentário</span>
+      <textarea rows="3" th:field="*{texto}"></textarea>
+      <small th:if="${#fields.hasErrors('texto')}" th:errors="*{texto}">Erro</small>
+    </label>
+    <button class="botao" type="submit">Publicar comentário</button>
+  </form>
+</section>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: pagina('Técnico', 'tecnicos', ~{::section})}">
+<body>
+<section>
+  <p><a th:href="@{/web/tecnicos}">Voltar para técnicos</a></p>
+  <header class="topo">
+    <h1 th:text="${editando} ? 'Editar técnico' : 'Novo técnico'">Novo técnico</h1>
+  </header>
+
+  <form class="cartao" method="post" novalidate th:action="@{${acao}}" th:object="${form}">
+    <div class="erro" th:if="${#fields.hasGlobalErrors()}">
+      <p th:each="e : ${#fields.globalErrors()}" th:text="${e}">Erro</p>
+    </div>
+
+    <label class="campo">
+      <span>Nome</span>
+      <input type="text" th:field="*{nome}">
+      <small th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro</small>
+    </label>
+
+    <label class="campo">
+      <span>E-mail</span>
+      <input type="email" th:field="*{email}">
+      <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Erro</small>
+    </label>
+
+    <label class="campo">
+      <span>Perfil</span>
+      <select th:field="*{perfil}">
+        <option value="">Selecione</option>
+        <option th:each="p : ${perfis}" th:value="${p.name()}" th:text="${p.rotulo}">Técnico</option>
+      </select>
+      <small th:if="${#fields.hasErrors('perfil')}" th:errors="*{perfil}">Erro</small>
+    </label>
+
+    <div class="grupo">
+      <button class="botao" type="submit">Salvar</button>
+      <a class="botao secundario" th:href="@{/web/tecnicos}">Cancelar</a>
+    </div>
+  </form>
+</section>
+</body>
+</html>

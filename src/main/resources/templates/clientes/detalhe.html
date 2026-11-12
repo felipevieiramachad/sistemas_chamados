@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: pagina('Cliente', 'clientes', ~{::section})}">
+<body>
+<section>
+  <p><a th:href="@{/web/clientes}">Voltar para clientes</a></p>
+  <header class="topo">
+    <h1 th:text="${cliente.nome()}">Nome do cliente</h1>
+    <div class="grupo">
+      <a class="botao secundario" th:href="@{|/web/clientes/${cliente.id()}/editar|}">Editar</a>
+      <a class="botao" th:href="@{/web/chamados/novo(clienteId=${cliente.id()})}">Abrir chamado</a>
+    </div>
+  </header>
+
+  <dl class="dados">
+    <dt>E-mail</dt><dd th:text="${cliente.email()}">email@exemplo.com</dd>
+    <dt>Telefone</dt><dd th:text="${cliente.telefone() != null} ? ${cliente.telefone()} : '—'">Telefone</dd>
+  </dl>
+
+  <h2>Chamados deste cliente</h2>
+  <div th:replace="~{fragments :: tabelaChamados(${chamados.conteudo()}, false)}"></div>
+  <div th:replace="~{fragments :: paginacao(${chamados}, '/web/clientes/' + ${cliente.id()}, '')}"></div>
+</section>
+</body>
+</html>

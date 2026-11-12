@@ -1,5 +1,16 @@
 package br.com.sistemas.chamados.entity;
 
 public enum Perfil {
-    ADMIN, TECNICO
+    ADMIN("Administrador"),
+    TECNICO("Técnico");
+
+    private final String rotulo;
+
+    Perfil(String rotulo) {
+        this.rotulo = rotulo;
+    }
+
+    public String getRotulo() {
+        return rotulo;
+    }
 }

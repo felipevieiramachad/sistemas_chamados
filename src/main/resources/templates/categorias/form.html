@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: pagina('Categoria', 'categorias', ~{::section})}">
+<body>
+<section>
+  <p><a th:href="@{/web/categorias}">Voltar para categorias</a></p>
+  <header class="topo">
+    <h1 th:text="${editando} ? 'Editar categoria' : 'Nova categoria'">Nova categoria</h1>
+  </header>
+
+  <form class="cartao" method="post" novalidate th:action="@{${acao}}" th:object="${form}">
+    <div class="erro" th:if="${#fields.hasGlobalErrors()}">
+      <p th:each="e : ${#fields.globalErrors()}" th:text="${e}">Erro</p>
+    </div>
+
+    <label class="campo">
+      <span>Nome</span>
+      <input type="text" th:field="*{nome}">
+      <small th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro</small>
+    </label>
+
+    <label class="campo">
+      <span>Descrição</span>
+      <textarea rows="4" th:field="*{descricao}"></textarea>
+      <small th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}">Erro</small>
+    </label>
+
+    <div class="grupo">
+      <button class="botao" type="submit">Salvar</button>
+      <a class="botao secundario" th:href="@{/web/categorias}">Cancelar</a>
+    </div>
+  </form>
+</section>
+</body>
+</html>

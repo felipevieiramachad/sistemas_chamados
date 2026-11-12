@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: pagina('Cliente', 'clientes', ~{::section})}">
+<body>
+<section>
+  <p><a th:href="@{/web/clientes}">Voltar para clientes</a></p>
+  <header class="topo">
+    <h1 th:text="${editando} ? 'Editar cliente' : 'Novo cliente'">Novo cliente</h1>
+  </header>
+
+  <form class="cartao" method="post" novalidate th:action="@{${acao}}" th:object="${form}">
+    <div class="erro" th:if="${#fields.hasGlobalErrors()}">
+      <p th:each="e : ${#fields.globalErrors()}" th:text="${e}">Erro</p>
+    </div>
+
+    <label class="campo">
+      <span>Nome</span>
+      <input type="text" th:field="*{nome}">
+      <small th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro</small>
+    </label>
+
+    <label class="campo">
+      <span>E-mail</span>
+      <input type="email" th:field="*{email}">
+      <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Erro</small>
+    </label>
+
+    <label class="campo">
+      <span>Telefone</span>
+      <input type="text" th:field="*{telefone}">
+      <small th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}">Erro</small>
+    </label>
+
+    <div class="grupo">
+      <button class="botao" type="submit">Salvar</button>
+      <a class="botao secundario" th:href="@{/web/clientes}">Cancelar</a>
+    </div>
+  </form>
+</section>
+</body>
+</html>

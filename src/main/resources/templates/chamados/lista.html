@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: pagina('Chamados', 'chamados', ~{::section})}">
+<body>
+<section>
+  <header class="topo">
+    <h1>Chamados</h1>
+    <a class="botao" th:href="@{/web/chamados/novo}">Novo chamado</a>
+  </header>
+
+  <form class="filtros" method="get" th:action="@{/web/chamados}">
+    <label>Status
+      <select name="status">
+        <option value="">Todos</option>
+        <option th:each="s : ${statusOpcoes}" th:value="${s.name()}" th:text="${s.rotulo}"
+                th:selected="${s == filtroStatus}">Aberto</option>
+      </select>
+    </label>
+    <label>Prioridade
+      <select name="prioridade">
+        <option value="">Todas</option>
+        <option th:each="p : ${prioridades}" th:value="${p.name()}" th:text="${p.rotulo}"
+                th:selected="${p == filtroPrioridade}">Média</option>
+      </select>
+    </label>
+    <label>Cliente
+      <select name="clienteId">
+        <option value="">Todos</option>
+        <option th:each="c : ${clientes}" th:value="${c.id()}" th:text="${c.nome()}"
+                th:selected="${filtroCliente != null and filtroCliente == c.id()}">Cliente</option>
+      </select>
+    </label>
+    <label>Ordem
+      <select name="sort">
+        <option value="dataAbertura,desc" th:selected="${ordem == 'dataAbertura,desc'}">Mais recentes primeiro</option>
+        <option value="dataAbertura,asc" th:selected="${ordem == 'dataAbertura,asc'}">Mais antigos primeiro</option>
+        <option value="titulo,asc" th:selected="${ordem == 'titulo,asc'}">Título de A a Z</option>
+      </select>
+    </label>
+    <button class="botao" type="submit">Filtrar</button>
+    <a th:if="${filtrando}" th:href="@{/web/chamados}">Limpar filtros</a>
+  </form>
+
+  <div th:replace="~{fragments :: tabelaChamados(${chamados.conteudo()}, true)}"></div>
+  <div th:replace="~{fragments :: paginacao(${chamados}, '/web/chamados', ${consulta})}"></div>
+</section>
+</body>
+</html>
