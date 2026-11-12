@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="pagina(titulo, ativo, conteudo)">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${titulo} + ' - Sistema de Chamados'">Sistema de Chamados</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/estilo.css}">
+  <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div class="app">
+  <nav class="menu" aria-label="Menu principal">
+    <strong class="marca">Sistema de Chamados</strong>
+    <a th:href="@{/web}" th:classappend="${ativo == 'painel'} ? 'ativo'">Painel</a>
+    <a th:href="@{/web/clientes}" th:classappend="${ativo == 'clientes'} ? 'ativo'">Clientes</a>
+    <a th:href="@{/web/categorias}" th:classappend="${ativo == 'categorias'} ? 'ativo'">Categorias</a>
+    <a th:href="@{/web/tecnicos}" th:classappend="${ativo == 'tecnicos'} ? 'ativo'">Técnicos</a>
+    <a th:href="@{/web/chamados}" th:classappend="${ativo == 'chamados'} ? 'ativo'">Chamados</a>
+  </nav>
+  <main class="conteudo">
+    <div th:replace="~{fragments :: mensagens}"></div>
+    <th:block th:replace="${conteudo}">conteúdo da página</th:block>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: pagina('Erro', '', ~{::section})}">
+<body>
+<section>
+  <h1 th:text="${tituloErro}">Algo deu errado</h1>
+  <p th:text="${mensagem}">Mensagem do erro.</p>
+  <p><a class="botao" th:href="@{/web}">Voltar ao painel</a></p>
+</section>
+</body>
+</html>

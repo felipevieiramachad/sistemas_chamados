@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: pagina('Clientes', 'clientes', ~{::section})}">
+<body>
+<section>
+  <header class="topo">
+    <h1>Clientes</h1>
+    <a class="botao" th:href="@{/web/clientes/novo}">Novo cliente</a>
+  </header>
+
+  <p class="vazio" th:if="${#lists.isEmpty(clientes)}">Nada cadastrado ainda. Use o botão "Novo cliente" para criar o primeiro.</p>
+
+  <div class="rolagem" th:unless="${#lists.isEmpty(clientes)}">
+    <table>
+      <thead>
+        <tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Ações</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="c : ${clientes}">
+          <td th:text="${c.nome()}">Nome</td>
+          <td th:text="${c.email()}">email@exemplo.com</td>
+          <td th:text="${c.telefone() != null} ? ${c.telefone()} : '—'">Telefone</td>
+          <td class="acoes">
+            <a th:href="@{|/web/clientes/${c.id()}|}">Ver</a>
+            <a th:href="@{|/web/clientes/${c.id()}/editar|}">Editar</a>
+            <form method="post" th:action="@{|/web/clientes/${c.id()}/excluir|}"
+                  th:attr="data-confirma=|Excluir o cliente ${c.nome()}?|">
+              <button type="submit" class="link perigo">Excluir</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</body>
+</html>

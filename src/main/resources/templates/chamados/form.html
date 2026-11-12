@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: pagina('Chamado', 'chamados', ~{::section})}">
+<body>
+<section>
+  <p>
+    <a th:if="${editando}" th:href="@{|/web/chamados/${id}|}">Voltar para o chamado</a>
+    <a th:unless="${editando}" th:href="@{/web/chamados}">Voltar para chamados</a>
+  </p>
+  <header class="topo">
+    <h1 th:text="${editando} ? 'Editar chamado' : 'Novo chamado'">Novo chamado</h1>
+  </header>
+
+  <p class="vazio" th:if="${#lists.isEmpty(clientes) or #lists.isEmpty(categorias)}">
+    Para abrir um chamado é preciso ter ao menos um
+    <a th:href="@{/web/clientes/novo}">cliente</a> e uma
+    <a th:href="@{/web/categorias/novo}">categoria</a> cadastrados.
+  </p>
+
+  <form class="cartao" method="post" novalidate th:action="@{${acao}}" th:object="${form}">
+    <div class="erro" th:if="${#fields.hasGlobalErrors()}">
+      <p th:each="e : ${#fields.globalErrors()}" th:text="${e}">Erro</p>
+    </div>
+
+    <label class="campo">
+      <span>Título</span>
+      <input type="text" th:field="*{titulo}">
+      <small th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}">Erro</small>
+    </label>
+
+    <label class="campo">
+      <span>Descrição</span>
+      <textarea rows="5" th:field="*{descricao}"></textarea>
+      <small th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}">Erro</small>
+    </label>
+
+    <label class="campo">
+      <span>Prioridade</span>
+      <select th:field="*{prioridade}">
+        <option value="">Selecione</option>
+        <option th:each="p : ${prioridades}" th:value="${p.name()}" th:text="${p.rotulo}">Média</option>
+      </select>
+      <small th:if="${#fields.hasErrors('prioridade')}" th:errors="*{prioridade}">Erro</small>
+    </label>
+
+    <label class="campo">
+      <span>Cliente</span>
+      <select th:field="*{clienteId}">
+        <option value="">Selecione</option>
+        <option th:each="c : ${clientes}" th:value="${c.id()}" th:text="${c.nome()}">Cliente</option>
+      </select>
+      <small th:if="${#fields.hasErrors('clienteId')}" th:errors="*{clienteId}">Erro</small>
+    </label>
+
+    <label class="campo">
+      <span>Categoria</span>
+      <select th:field="*{categoriaId}">
+        <option value="">Selecione</option>
+        <option th:each="c : ${categorias}" th:value="${c.id()}" th:text="${c.nome()}">Categoria</option>
+      </select>
+      <small th:if="${#fields.hasErrors('categoriaId')}" th:errors="*{categoriaId}">Erro</small>
+    </label>
+
+    <div class="grupo">
+      <button class="botao" type="submit">Salvar</button>
+      <a class="botao secundario" th:if="${editando}" th:href="@{|/web/chamados/${id}|}">Cancelar</a>
+      <a class="botao secundario" th:unless="${editando}" th:href="@{/web/chamados}">Cancelar</a>
+    </div>
+  </form>
+</section>
+</body>
+</html>

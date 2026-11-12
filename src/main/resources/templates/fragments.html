@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- mensagens enviadas pelos controllers com flash.addFlashAttribute -->
+<div th:fragment="mensagens">
+  <div class="sucesso" role="status" th:if="${sucesso != null}" th:text="${sucesso}">Salvo.</div>
+  <div class="erro" role="alert" th:if="${erro != null}" th:text="${erro}">Erro.</div>
+</div>
+
+<!-- tabela de chamados: usada no painel, na lista de chamados e no detalhe do cliente -->
+<th:block th:fragment="tabelaChamados(chamados, mostrarCliente)">
+  <p class="vazio" th:if="${#lists.isEmpty(chamados)}">Nenhum chamado encontrado.</p>
+  <div class="rolagem" th:unless="${#lists.isEmpty(chamados)}">
+    <table>
+      <thead>
+        <tr>
+          <th>Nº</th>
+          <th>Título</th>
+          <th th:if="${mostrarCliente}">Cliente</th>
+          <th>Categoria</th>
+          <th>Prioridade</th>
+          <th>Status</th>
+          <th>Técnico</th>
+          <th>Aberto em</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="c : ${chamados}">
+          <td th:text="${c.id()}">1</td>
+          <td><a th:href="@{|/web/chamados/${c.id()}|}" th:text="${c.titulo()}">Título</a></td>
+          <td th:if="${mostrarCliente}" th:text="${c.clienteNome()}">Cliente</td>
+          <td th:text="${c.categoriaNome()}">Categoria</td>
+          <td><span class="selo" th:classappend="${'pr-' + c.prioridade().name()}"
+                    th:text="${c.prioridade().rotulo}">Média</span></td>
+          <td><span class="selo" th:classappend="${'st-' + c.status().name()}"
+                    th:text="${c.status().rotulo}">Aberto</span></td>
+          <td th:text="${c.tecnicoNome() != null} ? ${c.tecnicoNome()} : '—'">Técnico</td>
+          <td th:text="${#temporals.format(c.dataAbertura(), 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</th:block>
+
+<!-- paginação: "pagina" é o PaginaResponse; "base" é o caminho; "consulta" são os filtros já na URL -->
+<nav class="paginacao" aria-label="Paginação" th:fragment="paginacao(pagina, base, consulta)">
+  <p class="suave" th:if="${pagina.totalPaginas() le 1}" th:text="${pagina.totalElementos() + ' registro(s)'}">1 registro(s)</p>
+  <th:block th:if="${pagina.totalPaginas() gt 1}">
+    <a class="botao secundario" th:if="${pagina.pagina() gt 0}"
+       th:href="@{|${base}?${consulta}page=${pagina.pagina() - 1}|}">Anterior</a>
+    <span th:text="|Página ${pagina.pagina() + 1} de ${pagina.totalPaginas()} (${pagina.totalElementos()} registros)|">Página 1 de 2</span>
+    <a class="botao secundario" th:if="${pagina.pagina() + 1 lt pagina.totalPaginas()}"
+       th:href="@{|${base}?${consulta}page=${pagina.pagina() + 1}|}">Próxima</a>
+  </th:block>
+</nav>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: pagina('Painel', 'painel', ~{::section})}">
+<body>
+<section>
+  <header class="topo">
+    <h1>Painel</h1>
+    <a class="botao" th:href="@{/web/chamados/novo}">Abrir chamado</a>
+  </header>
+
+  <div class="totais">
+    <a class="total" th:each="t : ${totais}"
+       th:classappend="${'tt-' + t.status().name()}"
+       th:href="@{/web/chamados(status=${t.status().name()})}">
+      <strong th:text="${t.total()}">0</strong>
+      <span th:text="${t.status().rotulo}">Aberto</span>
+    </a>
+  </div>
+
+  <h2>Chamados mais recentes</h2>
+  <div th:replace="~{fragments :: tabelaChamados(${recentes}, true)}"></div>
+</section>
+</body>
+</html>
